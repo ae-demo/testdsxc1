@@ -1,0 +1,5 @@
+{
+  "name": "sendgrid",
+  "source": "org",
+  "description": "Sends email notifications for allocation-request and allocation-decision events."
+}

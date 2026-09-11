@@ -1,0 +1,18 @@
+{
+  "name": "allocation-api",
+  "type": "service",
+  "version": "0.1.0",
+  "language": "Ballerina",
+  "buildpack": "docker",
+  "appPath": "allocation-api",
+  "entrypoint": "deployment/service",
+  "exposure": "intranet",
+  "dependencies": [
+    { "kind": "platform-resource", "name": "allocation-db", "resourceType": "postgres-cnpg", "parameters": { "instances": 1, "storage": "1Gi", "version": "16" } },
+    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app", "parameters": {} },
+    { "kind": "external", "name": "sendgrid", "description": "Sends allocation-request-submitted and allocation-decision emails to Engagement Managers and Resource Managers." }
+  ],
+  "description": "Ballerina REST API owning engagements, the team member roster, allocation requests, and confirmed allocations. Enforces the request-approval workflow, computes per-team-member utilization, and warns (without blocking) on over-100% allocation. Sends notification emails via SendGrid. Does not serve any UI and issues no auth tokens itself — the gateway validates the caller's token.",
+  "stories": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  "skillsPinned": ["openapi-conventions", "ballerina", "api-management", "thunder-authentication"]
+}

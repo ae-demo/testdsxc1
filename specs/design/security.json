@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "coldStartRole": "Team Member",
+  "publicComponents": [],
+  "roles": [
+    {
+      "name": "Team Member",
+      "description": "Views their own current and upcoming allocations across engagements.",
+      "stories": [13],
+      "grantedBy": "first sign-in",
+      "permissions": [
+        { "component": "allocation-api", "actions": ["read own allocations"] },
+        { "component": "allocation-webapp", "screens": ["MyAllocations"] }
+      ]
+    },
+    {
+      "name": "Account Manager",
+      "description": "Creates and manages customers and engagements, defines staffing plans, and submits allocation requests.",
+      "stories": [1, 2, 3, 4, 5],
+      "grantedBy": "Resource Manager",
+      "permissions": [
+        { "component": "allocation-api", "actions": ["manage engagements", "create allocation request", "read own requests"] },
+        { "component": "allocation-webapp", "screens": ["EngagementsList", "NewEngagement", "EngagementDetail", "NewRequest", "RequestsList"] }
+      ]
+    },
+    {
+      "name": "Resource Manager",
+      "description": "Reviews, approves, and rejects allocation requests, assigns team members to engagements, and manages existing allocations.",
+      "stories": [6, 7, 8, 9, 10, 11, 12],
+      "grantedBy": "Resource Manager",
+      "permissions": [
+        { "component": "allocation-api", "actions": ["manage team member roster", "review allocation requests", "approve request", "reject request", "manage allocations"] },
+        { "component": "allocation-webapp", "screens": ["RequestQueue", "RequestDetail", "TeamRoster", "NewTeamMember", "TeamMemberDetail", "AllocationsList"] }
+      ]
+    }
+  ],
+  "testUsers": [
+    { "username": "test-team-member", "role": "Team Member" },
+    { "username": "test-account-manager", "role": "Account Manager" },
+    { "username": "test-resource-manager", "role": "Resource Manager" }
+  ],
+  "thunder": {
+    "name": "Allocation Manager",
+    "type": "browser",
+    "scopes": "openid profile email group ou"
+  }
+}

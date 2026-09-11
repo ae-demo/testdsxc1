@@ -1,0 +1,570 @@
+openapi: 3.0.3
+info:
+  title: Allocation API
+  version: 0.1.0
+  description: Manages customer engagements, the team member roster, allocation requests, and confirmed allocations.
+servers:
+  - url: /
+security:
+  - bearerAuth: []
+paths:
+  /engagements:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: listEngagements
+      summary: List customer engagements
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: status
+          in: query
+          schema: { type: string, enum: [active, closed] }
+          description: filter by engagement status
+      responses:
+        '200':
+          description: matching engagements
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Engagement' }
+    post:
+      operationId: createEngagement
+      summary: Create a customer engagement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EngagementInput' }
+      responses:
+        '201':
+          description: engagement created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Engagement' }
+        '400':
+          description: invalid engagement data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /engagements/{engagementId}:
+    parameters:
+      - $ref: '#/components/parameters/EngagementId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getEngagement
+      summary: Get a customer engagement
+      responses:
+        '200':
+          description: the engagement
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Engagement' }
+        '404':
+          description: engagement not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    patch:
+      operationId: updateEngagement
+      summary: Update a customer engagement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EngagementInput' }
+      responses:
+        '200':
+          description: engagement updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Engagement' }
+        '404':
+          description: engagement not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /engagements/{engagementId}/close:
+    parameters:
+      - $ref: '#/components/parameters/EngagementId'
+      - $ref: '#/components/parameters/UserId'
+    post:
+      operationId: closeEngagement
+      summary: Close an engagement and end its active allocations
+      responses:
+        '200':
+          description: engagement closed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Engagement' }
+        '404':
+          description: engagement not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /team-members:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: listTeamMembers
+      summary: List team member roster
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: active
+          in: query
+          schema: { type: boolean }
+          description: filter by active status
+      responses:
+        '200':
+          description: matching team members
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/TeamMember' }
+    post:
+      operationId: createTeamMember
+      summary: Add a team member to the roster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TeamMemberInput' }
+      responses:
+        '201':
+          description: team member created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TeamMember' }
+        '400':
+          description: invalid team member data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /team-members/{teamMemberId}:
+    parameters:
+      - $ref: '#/components/parameters/TeamMemberId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getTeamMember
+      summary: Get a team member
+      responses:
+        '200':
+          description: the team member
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TeamMember' }
+        '404':
+          description: team member not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    patch:
+      operationId: updateTeamMember
+      summary: Update a team member, including deactivation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TeamMemberInput' }
+      responses:
+        '200':
+          description: team member updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TeamMember' }
+        '404':
+          description: team member not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /team-members/{teamMemberId}/allocations:
+    parameters:
+      - $ref: '#/components/parameters/TeamMemberId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getTeamMemberAllocations
+      summary: Get a team member's current/upcoming allocations and total utilization
+      responses:
+        '200':
+          description: the team member's allocations and utilization
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TeamMemberUtilization' }
+        '404':
+          description: team member not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /me/allocations:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getMyAllocations
+      summary: Get the caller's own current/upcoming allocations and utilization
+      responses:
+        '200':
+          description: the caller's allocations and utilization
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TeamMemberUtilization' }
+        '404':
+          description: caller has no team member record
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /allocation-requests:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: listAllocationRequests
+      summary: List allocation requests
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: status
+          in: query
+          schema: { type: string, enum: [pending, approved, rejected] }
+          description: filter by request status
+        - name: engagementId
+          in: query
+          schema: { type: string }
+          description: filter by engagement
+      responses:
+        '200':
+          description: matching allocation requests
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/AllocationRequest' }
+    post:
+      operationId: createAllocationRequest
+      summary: Submit a request for a team member on an engagement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AllocationRequestInput' }
+      responses:
+        '201':
+          description: request submitted, pending review
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AllocationRequest' }
+        '400':
+          description: invalid request data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /allocation-requests/{requestId}:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getAllocationRequest
+      summary: Get an allocation request
+      responses:
+        '200':
+          description: the allocation request
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AllocationRequest' }
+        '404':
+          description: request not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /allocation-requests/{requestId}/approve:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - $ref: '#/components/parameters/UserId'
+    post:
+      operationId: approveAllocationRequest
+      summary: Approve a pending request, assigning a team member; creates the allocation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [teamMemberId]
+              properties:
+                teamMemberId: { type: string }
+                overrideOverAllocation: { type: boolean, description: confirm approval despite an over-100% warning }
+      responses:
+        '200':
+          description: request approved and allocation created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AllocationRequest' }
+        '409':
+          description: approving would exceed 100% allocation and override was not set
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: request not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /allocation-requests/{requestId}/reject:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+      - $ref: '#/components/parameters/UserId'
+    post:
+      operationId: rejectAllocationRequest
+      summary: Reject a pending request with a reason
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string }
+      responses:
+        '200':
+          description: request rejected
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AllocationRequest' }
+        '404':
+          description: request not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /allocations:
+    parameters:
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: listAllocations
+      summary: List confirmed allocations
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+        - name: engagementId
+          in: query
+          schema: { type: string }
+          description: filter by engagement
+        - name: teamMemberId
+          in: query
+          schema: { type: string }
+          description: filter by team member
+      responses:
+        '200':
+          description: matching allocations
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, data]
+                properties:
+                  count: { type: integer, description: total matching items }
+                  next: { type: string, nullable: true, description: relative URI of the next page }
+                  previous: { type: string, nullable: true, description: relative URI of the previous page }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Allocation' }
+  /allocations/{allocationId}:
+    parameters:
+      - $ref: '#/components/parameters/AllocationId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      operationId: getAllocation
+      summary: Get a confirmed allocation
+      responses:
+        '200':
+          description: the allocation
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Allocation' }
+        '404':
+          description: allocation not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    patch:
+      operationId: updateAllocation
+      summary: Edit an allocation's percentage or date range
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AllocationInput' }
+      responses:
+        '200':
+          description: allocation updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Allocation' }
+        '404':
+          description: allocation not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      operationId: cancelAllocation
+      summary: Cancel an allocation
+      responses:
+        '204':
+          description: allocation cancelled
+        '404':
+          description: allocation not found
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  parameters:
+    UserId:
+      name: X-User-Id
+      in: header
+      required: true
+      description: caller identity injected by the gateway from the validated token
+      schema: { type: string }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, default: 20, maximum: 100 }
+      description: max items to return
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, default: 0 }
+      description: items to skip
+    EngagementId:
+      name: engagementId
+      in: path
+      required: true
+      schema: { type: string }
+      description: engagement identifier
+    TeamMemberId:
+      name: teamMemberId
+      in: path
+      required: true
+      schema: { type: string }
+      description: team member identifier
+    RequestId:
+      name: requestId
+      in: path
+      required: true
+      schema: { type: string }
+      description: allocation request identifier
+    AllocationId:
+      name: allocationId
+      in: path
+      required: true
+      schema: { type: string }
+      description: allocation identifier
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: integer, description: HTTP or application error code }
+        message: { type: string, description: short human-readable label }
+        description: { type: string, description: detailed explanation }
+        moreInfo: { type: string, description: URI to documentation }
+    EngagementInput:
+      type: object
+      required: [name, customerName, startDate, endDate]
+      properties:
+        name: { type: string }
+        customerName: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+    Engagement:
+      allOf:
+        - $ref: '#/components/schemas/EngagementInput'
+        - type: object
+          required: [id, status]
+          properties:
+            id: { type: string }
+            status: { type: string, enum: [active, closed] }
+    TeamMemberInput:
+      type: object
+      required: [name, roleTitle]
+      properties:
+        name: { type: string }
+        roleTitle: { type: string }
+        skills: { type: string, description: comma-separated skills }
+        active: { type: boolean, default: true }
+    TeamMember:
+      allOf:
+        - $ref: '#/components/schemas/TeamMemberInput'
+        - type: object
+          required: [id]
+          properties:
+            id: { type: string }
+    AllocationRequestInput:
+      type: object
+      required: [engagementId, roleNeeded, percentage, startDate, endDate]
+      properties:
+        engagementId: { type: string }
+        roleNeeded: { type: string }
+        percentage: { type: integer, minimum: 1, maximum: 100 }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+    AllocationRequest:
+      allOf:
+        - $ref: '#/components/schemas/AllocationRequestInput'
+        - type: object
+          required: [id, status, requestedBy]
+          properties:
+            id: { type: string }
+            status: { type: string, enum: [pending, approved, rejected] }
+            requestedBy: { type: string, description: id of the requesting Engagement Manager }
+            decisionReason: { type: string, description: reason given when rejected }
+    AllocationInput:
+      type: object
+      required: [percentage, startDate, endDate]
+      properties:
+        percentage: { type: integer, minimum: 1, maximum: 100 }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+    Allocation:
+      allOf:
+        - $ref: '#/components/schemas/AllocationInput'
+        - type: object
+          required: [id, requestId, engagementId, teamMemberId, status]
+          properties:
+            id: { type: string }
+            requestId: { type: string }
+            engagementId: { type: string }
+            teamMemberId: { type: string }
+            status: { type: string, enum: [active, ended, cancelled] }
+    TeamMemberUtilization:
+      type: object
+      required: [teamMemberId, totalPercentage, allocations]
+      properties:
+        teamMemberId: { type: string }
+        totalPercentage: { type: integer, description: sum of percentage across current/upcoming allocations }
+        allocations:
+          type: array
+          items: { $ref: '#/components/schemas/Allocation' }
