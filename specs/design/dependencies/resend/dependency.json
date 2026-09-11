@@ -1,0 +1,5 @@
+{
+  "name": "resend",
+  "source": "org",
+  "description": "Resend — a transactional email API for sending notification, confirmation, and alert emails to end users. This is the organization's preferred provider whenever a component needs to notify someone by email. Prefer calling Resend's REST API directly (POST https://api.resend.com/emails) with the API key as a Bearer token, or an official SDK where one exists for the component's language."
+}

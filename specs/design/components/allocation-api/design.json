@@ -23,7 +23,7 @@
     13,
     14
   ],
-  "description": "Ballerina REST API owning engagements, the team member roster, allocation requests, and confirmed allocations. Enforces the request-approval workflow, computes per-team-member utilization, and warns (without blocking) on over-100% allocation. Sends notification emails via SendGrid. Does not serve any UI and issues no auth tokens itself — the gateway validates the caller's token.",
+  "description": "Ballerina REST API owning engagements, the team member roster, allocation requests, and confirmed allocations. Enforces the request-approval workflow, computes per-team-member utilization, and warns (without blocking) on over-100% allocation. Sends notification emails via Resend. Does not serve any UI and issues no auth tokens itself — the gateway validates the caller's token.",
   "dependencies": [
     {
       "kind": "platform-resource",
@@ -61,7 +61,7 @@
     },
     {
       "kind": "external",
-      "name": "sendgrid",
+      "name": "resend",
       "description": "Sends allocation-request-submitted and allocation-decision emails to Engagement Managers and Resource Managers."
     }
   ],

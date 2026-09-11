@@ -5,7 +5,7 @@ component allocation-api as "Allocation API" service
 component allocation-db as "Allocation Database" database
 
 east user-auth as "Thunder Auth" identity-server
-south sendgrid as "SendGrid" service
+south resend as "Resend" service
 
 north -> allocation-webapp
 
@@ -13,4 +13,4 @@ allocation-webapp -> allocation-api
 allocation-webapp -> user-auth
 allocation-api -> user-auth
 allocation-api -> allocation-db
-allocation-api -> sendgrid
+allocation-api -> resend

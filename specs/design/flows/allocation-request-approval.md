@@ -9,7 +9,7 @@ sequenceDiagram
     actor TeamMember as Team Member
     participant allocation-webapp
     participant allocation-api
-    participant sendgrid
+    participant resend
 
     EngMgr->>allocation-webapp: submit request (role, %, dates)
     allocation-webapp->>allocation-api: create allocation request
@@ -26,7 +26,7 @@ sequenceDiagram
         ResMgr->>allocation-webapp: confirm anyway
         allocation-webapp->>allocation-api: confirm approval
     end
-    allocation-api->>sendgrid: send decision email
+    allocation-api->>resend: send decision email
     allocation-api-->>allocation-webapp: allocation confirmed
 
     TeamMember->>allocation-webapp: view my allocations

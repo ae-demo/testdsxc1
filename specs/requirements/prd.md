@@ -36,7 +36,7 @@ A web application that centralizes team member allocation to customer engagement
 - **Sign-in**: all actors sign in via SSO through Thunder, the platform identity provider.
 - **Allocation workflow**: request → approval → assignment. Engagement Managers submit requests; Resource Managers approve or reject them; only an approved request becomes a confirmed allocation.
 - **Allocation unit**: a percentage of a team member's time over a start/end date range (not hours, not full-time-only).
-- **Notifications**: transactional email — SendGrid, an existing organizational resource already provisioned for allocation-request and allocation-decision events.
+- **Notifications**: transactional email — Resend, the organization's preferred provider for notifying users by email.
 - **Over-allocation handling**: the system warns the Resource Manager rather than hard-blocking the approval, so an exception can still be made.
 - **Team member roster**: managed inside this application by the Resource Manager, not imported from an external HR system.
 
