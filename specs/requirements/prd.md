@@ -18,16 +18,16 @@ A web application that centralizes team member allocation to customer engagement
 
 1. As an Engagement Manager, I want to create and manage a customer engagement (name, customer, start/end dates), so that I have something to staff.
 2. As an Engagement Manager, I want to close/end a customer engagement, so that its allocations end and the team members on it free up capacity.
-3. As an Engagement Manager, I want to submit a request for a team member on one of my engagements, specifying the role/skill needed, the percentage of time, and a date range, so that the Resource Manager knows what to staff. *assumed*
+3. As an Engagement Manager, I want to submit a request for a team member on one of my engagements, specifying the role/skill needed, the percentage of time, and a date range, so that the Resource Manager knows what to staff.
 4. As an Engagement Manager, I want to see the status of every request I've submitted (pending, approved, rejected), so that I know whether my engagement is staffed.
 5. As an Engagement Manager, I want to see who is currently allocated to my engagements and at what percentage, so that I have visibility into my own staffing.
 6. As a Resource Manager, I want to see a queue of pending allocation requests, so that I can work through them.
 7. As a Resource Manager, I want to see a team member's current and upcoming allocations and total utilization percentage before approving a new request for them, so that I can make an informed decision.
-8. As a Resource Manager, I want to be warned when approving a request would push a team member over 100% allocated, so that I don't overcommit someone, while still being able to override the warning when the business needs it. *assumed*
+8. As a Resource Manager, I want to be warned when approving a request would push a team member over 100% allocated, so that I don't overcommit someone, while still being able to override the warning when the business needs it.
 9. As a Resource Manager, I want to approve a pending request and assign a specific team member to it, so that it becomes a confirmed allocation.
 10. As a Resource Manager, I want to reject a pending request with a reason, so that the Engagement Manager understands why and can adjust.
 11. As a Resource Manager, I want to edit or cancel an existing allocation (percentage, dates, or removal), so that I can adjust staffing as engagements change after approval.
-12. As a Resource Manager, I want to manage the roster of team members (add, edit, deactivate; name, role/title, skills), so that the allocation pool reflects who is actually available to staff. *assumed*
+12. As a Resource Manager, I want to manage the roster of team members (add, edit, deactivate; name, role/title, skills), so that the allocation pool reflects who is actually available to staff.
 13. As a Team Member, I want to view my own current and upcoming allocations across engagements and my overall utilization percentage, so that I know what I'm staffed on.
 14. As an Engagement Manager or Resource Manager, I want to receive an email when a request is submitted or decided, so that I don't have to keep checking the app for updates.
 
@@ -37,8 +37,8 @@ A web application that centralizes team member allocation to customer engagement
 - **Allocation workflow**: request → approval → assignment. Engagement Managers submit requests; Resource Managers approve or reject them; only an approved request becomes a confirmed allocation.
 - **Allocation unit**: a percentage of a team member's time over a start/end date range (not hours, not full-time-only).
 - **Notifications**: transactional email — SendGrid, an existing organizational resource already provisioned for allocation-request and allocation-decision events.
-- **Over-allocation handling**: the system warns the Resource Manager rather than hard-blocking the approval, so an exception can still be made. *assumed*
-- **Team member roster**: managed inside this application by the Resource Manager, not imported from an external HR system. *assumed*
+- **Over-allocation handling**: the system warns the Resource Manager rather than hard-blocking the approval, so an exception can still be made.
+- **Team member roster**: managed inside this application by the Resource Manager, not imported from an external HR system.
 
 ## Out of Scope
 
