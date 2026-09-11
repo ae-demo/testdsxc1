@@ -7,11 +7,57 @@
   "appPath": "allocation-webapp",
   "entrypoint": "deployment/web-application",
   "exposure": "internet",
-  "dependencies": [
-    { "kind": "component", "name": "allocation-api", "description": "Calls the allocation API for engagements, requests, allocations, and the team roster." },
-    { "kind": "platform-resource", "name": "user-auth", "resourceType": "thunder-app", "parameters": {} }
+  "stories": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
   ],
   "description": "Single-page React app for Engagement Managers, Resource Managers, and Team Members: create and manage engagements, submit and track allocation requests, review and approve requests against team capacity, manage the team roster, and view allocations. Holds no business logic and no secrets — everything goes through allocation-api.",
-  "stories": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-  "skillsPinned": ["wireframes", "react-webapp", "oxygen-ui-design-system", "thunder-authentication"]
+  "dependencies": [
+    {
+      "kind": "component",
+      "name": "allocation-api",
+      "description": "Calls the allocation API for engagements, requests, allocations, and the team roster.",
+      "wiring": {
+        "endpoint": {
+          "component": "testdsxc1-allocation-api",
+          "name": "http",
+          "visibility": "project",
+          "envBindings": {
+            "address": "ALLOCATION_API_URL"
+          }
+        }
+      }
+    },
+    {
+      "kind": "platform-resource",
+      "name": "user-auth",
+      "resourceType": "thunder-app",
+      "wiring": {
+        "ref": "testdsxc1-user-auth",
+        "envBindings": {
+          "client_id": "USER_AUTH_CLIENT_ID",
+          "issuer": "USER_AUTH_ISSUER",
+          "jwks_url": "USER_AUTH_JWKS_URL",
+          "scopes": "USER_AUTH_SCOPES"
+        }
+      }
+    }
+  ],
+  "skillsPinned": [
+    "wireframes",
+    "react-webapp",
+    "oxygen-ui-design-system",
+    "thunder-authentication"
+  ]
 }
